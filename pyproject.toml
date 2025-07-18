@@ -1,0 +1,38 @@
+[project]
+name = "ai-evals-course-202507"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=0.57.1",
+    "braintrust>=0.1.6",
+    "dotenv-python>=0.0.1",
+    "instructor>=1.9.2",
+    "openai>=1.95.0",
+    "pandas>=2.3.1",
+    "pydantic>=2.11.7",
+    "thefuzz>=0.22.1",
+]
+
+[dependency-groups]
+dev = ["ipykernel>=6.29.5", "nbqa>=1.7.0", "ruff>=0.1.0", "pre-commit>=3.0.0"]
+
+[tool.ruff]
+line-length = 140
+
+
+[tool.ruff.lint]
+select = ["I"] # Enable import sorting
+
+[tool.ruff.lint.isort]
+# Keep local imports at the bottom (this is default behavior)
+known-first-party = ["src"]
+lines-between-types = 1
+force-single-line = false
+
+[tool.nbqa.config]
+ruff = "pyproject.toml"
+
+[tool.nbqa.mutate]
+ruff = 1

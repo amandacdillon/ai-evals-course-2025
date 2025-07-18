@@ -1,0 +1,200 @@
+[
+    {
+      "name": "Public Works",
+      "slug": "public_works",
+      "support_areas": [
+        "Deceased animals",
+        "Graffiti on public property",
+        "Water leak (non-emergency)",
+        "Streetlight outages",
+        "Pothole repairs"
+      ],
+      "examples": [
+        "I saw a dead raccoon on Melba Road today—can someone remove it?",
+        "There’s new graffiti on the sidewalk wall along South Coast Highway.",
+        "A small water leak is pooling near the fire hydrant on Encinitas Blvd.",
+        "The streetlight in front of 450 Quail Gardens Dr has been out for 3 nights.",
+        "There’s a deep pothole on Manchester Ave that's damaging cars."
+      ]
+    },
+    {
+      "name": "Code Enforcement",
+      "slug": "code_enforcement",
+      "support_areas": [
+        "Abandoned vehicles",
+        "Illegal signs or banners",
+        "Noise complaints",
+        "Trash or junk on private property",
+        "Homeless overnight camping"
+      ],
+      "examples": [
+        "There’s a broken-down RV parked on Citrus Ave for over two weeks.",
+        "Someone put up a political banner on private property with no permit.",
+        "Neighbors at 2 a.m. are playing loud music by the pool every weekend.",
+        "The vacant lot next to Sunset View has piles of old furniture.",
+        "A homeless encampment is forming under the 101 overpass near Cardiff."
+      ]
+    },
+    {
+      "name": "Parks & Recreation",
+      "slug": "parks_recreation",
+      "support_areas": [
+        "Playground issues",
+        "Gate issues in parks",
+        "Graffiti in park sites",
+        "Trail maintenance",
+        "Trash or junk in park sites"
+      ],
+      "examples": [
+        "The swing set at Moonlight Beach park is missing a chain.",
+        "The main gate at Cottonwood Creek Park isn’t closing properly.",
+        "Graffiti appeared overnight on the restroom wall at Flora Vista Park.",
+        "The trail between Encinitas Community Park and city hall has large roots blocking it.",
+        "Overflowing trash cans at the lower park near the lagoon are attracting birds."
+      ]
+    },
+    {
+      "name": "Homeless Solutions",
+      "slug": "homeless_solutions",
+      "support_areas": [
+        "Homeless encampments in parks or beaches",
+        "Homeless encampments on private property",
+        "General inquiries about individuals experiencing homelessness",
+        "Reporting aggressive behavior",
+        "Need outreach services"
+      ],
+      "examples": [
+        "There’s a tent camp on the bluff above Moonlight Beach.",
+        "A homeless individual is sleeping in the courtyard of my business on Hwy 101.",
+        "I’d like to know what services are available to someone I saw panhandling downtown.",
+        "Someone yelling aggressively at passersby under the highway off-ramp.",
+        "This person seems mentally distressed near Encinitas Library—can outreach help?"
+      ]
+    },
+    {
+      "name": "Fire Prevention",
+      "slug": "fire_prevention",
+      "support_areas": [
+        "Fire hazard reporting",
+        "Concerns about brush clearance",
+        "Fire code violations",
+        "Inspection requests",
+        "Education requests"
+      ],
+      "examples": [
+        "There’s dry brush up the canyon behind my house on Quail Gardens Dr.",
+        "I saw sparks from a grill left near dry vegetation—possible hazard.",
+        "Neighbors built a wood storage lean‑to less than 5 ft from their house.",
+        "Can I book a fire safety inspection for my new event space on Vulcan Ave?",
+        "Do you offer fire‑safe yard workshops or materials for residents?"
+      ]
+    },
+    {
+      "name": "Traffic Engineering",
+      "slug": "traffic_engineering",
+      "support_areas": [
+        "Crosswalk safety",
+        "Traffic signal malfunctions",
+        "Speeding requests",
+        "Parking restrictions",
+        "Traffic calming"
+      ],
+      "examples": [
+        "Can a high‑visibility crosswalk be installed at Santa Fe Dr and Orpheus Ave?",
+        "The light at El Camino Real and Leucadia Blvd is stuck on red.",
+        "Cars speed down Leucadia Blvd—can we get a speed feedback sign?",
+        "My business needs loading zone parking on Coast Hwy but it's never enforced.",
+        "Requesting speed bump or traffic calming on Caminito Lucido—too many cut‑through vehicles."
+      ]
+    },
+    {
+      "name": "San Dieguito Water District",
+      "slug": "san_dieguito_water_district",
+      "support_areas": [
+        "Water billing questions",
+        "Emergency leaks",
+        "Conservation inquiries",
+        "Service maintenance requests",
+        "District operations"
+      ],
+      "examples": [
+        "My water bill doubled this month—can you explain the charges?",
+        "There’s water gushing from a broken pipe in the street in front of my house.",
+        "How can I apply for a rebate on drought‑tolerant landscaping?",
+        "The meter at my commercial property isn’t registering usage.",
+        "Is there a planned shutdown tomorrow for maintenance in south Encinitas?"
+      ]
+    },
+    {
+      "name": "San Diego Humane Society",
+      "slug": "san_diego_humane_society",
+      "support_areas": [
+        "Injured animal reports",
+        "Lost and found pets",
+        "Off-leash animal reports",
+        "Animal cruelty concerns",
+        "Wildlife entanglement"
+      ],
+      "examples": [
+        "Found an injured pelican on the beach near 13th St.",
+        "My dog Fluffy escaped at Moonlight Beach—found wandering around.",
+        "A group of dogs is running off‑leash near San Dieguito Lagoon.",
+        "I hear consistent signs of animal abuse in the unit next door.",
+        "A hawk seems stuck in fishing line at Beacon’s Beach cliffside."
+      ]
+    },
+    {
+      "name": "San Diego County Vector Control",
+      "slug": "san_diego_county_vector_control",
+      "support_areas": [
+        "Rodent infestations",
+        "Mosquito problems",
+        "Pest management info",
+        "Vector control advice",
+        "Standing water hazards"
+      ],
+      "examples": [
+        "I see rats in the alley behind my store on South Coast Hwy.",
+        "Mosquitoes are breeding in stagnant water in the park fountain at Encinitas Community Park.",
+        "Can you recommend safe pest control for ants in my backyard?",
+        "What should I do about a rodent problem in my restaurant kitchen?",
+        "The drainage pond near my home isn’t moving—mosquito larvae everywhere."
+      ]
+    },
+    {
+      "name": "General",
+      "slug": "general",
+      "support_areas": [
+        "General informational inquiries",
+        "How‑to questions",
+        "Uncategorized issues",
+        "City event info",
+        "Municipal code questions"
+      ],
+      "examples": [
+        "When is the next Encinitas City Council meeting?",
+        "How do I apply for a temporary special event permit on the beach?",
+        "Who should I contact about filming a documentary at the lagoon?",
+        "What are the hours of the Cardiff Community Center?",
+        "Can you explain the parking restrictions on Amphitheatre Dr?"
+      ]
+    },
+    {
+      "name": "Human Resources",
+      "slug": "human_resources",
+      "support_areas": [
+        "Complaints about city staff",
+        "Customer service feedback",
+        "Unprofessional conduct reports",
+        "Employment inquiries",
+        "Harassment/discrimination complaints"
+      ],
+      "examples": [
+        "An officer at the parking kiosk at Cottonwood Creek was rude to me.",
+        "The receptionist at City Hall hung up when I asked for permit info.",
+        "Can I file a complaint about a planning staff member ignoring ADA needs?",
+        "Are there any job openings in the city’s IT department?",
+        "I’d like to report discrimination I experienced during a public works inspection."
+      ]
+    }
+  ]
