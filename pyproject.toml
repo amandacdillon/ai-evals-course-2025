@@ -16,7 +16,13 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["ipykernel>=6.29.5", "nbqa>=1.7.0", "ruff>=0.1.0", "pre-commit>=3.0.0"]
+dev = [
+    "ipykernel>=6.29.5",
+ "nbqa>=1.7.0",
+ "ruff>=0.1.0",
+ "pre-commit>=3.0.0",
+ "nbconvert>=7.16.6",
+]
 
 [tool.ruff]
 line-length = 140
