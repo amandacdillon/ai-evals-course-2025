@@ -63,11 +63,20 @@ uv sync
 uv sync --group dev
 ```
 
-## Projects
+## Running Recipe Bot
+
+```python
+uvicorn backend.main:app --reload
+# Open http://127.0.0.1:8000
+```
+
+See the [AI Evaluations Course Recipe Chatbot repo](https://github.com/ai-evals-course/recipe-chatbot) for more info on this project.
+
+## Braintrust Projects
 
 ### 01 - Braintrust Intro
 
-In this project, you'll build and evaluate a **customer support chatbot** for a municipal government. The bot will help citizens get information about city services, report issues, and navigate local government processes. You'll learn how to:
+In this section, you'll build and evaluate a **customer support chatbot** for a municipal government. The bot will help citizens get information about city services, report issues, and navigate local government processes. You'll learn how to:
 
 - Generate high-quality synthetic training and evaluation data
 - Create robust evaluation tasks and metrics
@@ -101,6 +110,15 @@ This notebook covers:
 - Running systematic evaluations on your chatbot
 - Analyzing results and identifying areas for improvement
 - Comparing different model configurations and prompting strategies
+
+### 02 - Homework 1 & 2
+
+In this section, you'll learn how to instrument your recipe chatbot to log traces to Braintrust with LiteLLM. From there, you'll learn how to use Braintrust to:
+
+- Optimize your system prompts
+- Build synthetic user queries
+- Perform error analysis using the open and axial coding methods introduced in the course
+-
 
 ## Dependencies
 

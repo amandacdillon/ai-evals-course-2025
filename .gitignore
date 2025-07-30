@@ -5,7 +5,8 @@ build/
 dist/
 wheels/
 *.egg-info
-
-# Virtual environments
+.DS_Store
+# App specific
 .venv
 .env
+_*.ipynb
