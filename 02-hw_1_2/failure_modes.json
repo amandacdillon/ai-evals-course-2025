@@ -1,0 +1,92 @@
+{
+  "failure_modes": [
+    {
+      "title": "Unverified Store Availability",
+      "slug": "unverified_store_availability",
+      "description": "AI assumes ingredient availability at specific stores without confirmation or disclaimer.",
+      "examples": [
+        {
+          "input_id": "37",
+          "input": "Give me a Mexican-inspired meal prep recipe using Costco rotisserie chicken that has at least 30g protein per serving and reheats well for 5 days",
+          "output_issue": "AI doesn't know if these ingredients are available at Costco. AI should let the user know that and that the recommendation is based on what is likely available at Costco."
+        },
+        {
+          "input_id": "39",
+          "input": "What's a high-protein Japanese teriyaki salmon recipe I can batch cook on Sunday using Costco's frozen salmon and TJ's teriyaki sauce?",
+          "output_issue": "AI doesn't know if these ingredients are available at Costco. AI should let the user know that and that the recommendation is based on what is likely available at Costco."
+        },
+        {
+          "input_id": "40",
+          "input": "Create an American-style turkey chili recipe with 35g+ protein per serving using ground turkey from Costco that freezes well for meal prep",
+          "output_issue": "AI doesn't know if these ingredients are available at Costco. AI should let the user know that and that the recommendation is based on what is likely available at Costco."
+        }
+      ]
+    },
+    {
+      "title": "Incorrect Assumptions About User Intent",
+      "slug": "incorrect_assumptions_user_intent",
+      "description": "AI makes assumptions about user intent such as meal prep or bulk cooking when not requested.",
+      "examples": [
+        {
+          "input_id": "17",
+          "input": "What can I cook with 2 lbs of ground turkey?",
+          "output_issue": "User didn't ask for meal prep for the week but AI provided meal prep instructions."
+        },
+        {
+          "input_id": "25",
+          "input": "Post-workout meal with 3 ingredients",
+          "output_issue": "Follow-up question asking if the user is looking for more meal prep friendly ideas doesn't make sense with their initial ask."
+        },
+        {
+          "input_id": "34",
+          "input": "give me a recipe for lasagna that offers substitutions in case I don't have some of the ingredients",
+          "output_issue": "User isn't asking for meal prep but the intro says 'perfect for meal prep'."
+        }
+      ]
+    },
+    {
+      "title": "Missing or Inappropriate Follow-up Questions",
+      "slug": "missing_inappropriate_followup_questions",
+      "description": "AI fails to ask relevant follow-up questions or asks irrelevant ones.",
+      "examples": [
+        {
+          "input_id": "8",
+          "input": "I want to meal prep chicken breast, rice, and a vegetable. What ingredients should I use?",
+          "output_issue": "Agent should specify how many meals the recipe makes and ask how many meals the user wants to prep."
+        },
+        {
+          "input_id": "32",
+          "input": "i need to meal prep for 2 people using lean ground beef, quinoa and broccoli, give me the recipe with highest reviews",
+          "output_issue": "AI should ask how many days the user is meal prepping for and adjust ingredient amounts accordingly."
+        },
+        {
+          "input_id": "46",
+          "input": "Give me a Japanese-inspired meal prep recipe using Trader Joe's frozen edamame and their miso ginger broth with tofu for 25g+ protein",
+          "output_issue": "For meal prep questions, AI should ask how many days they are doing meal prep for."
+        }
+      ]
+    },
+    {
+      "title": "Unsubstantiated Claims About Recipe Attributes",
+      "slug": "unsubstantiated_recipe_claims",
+      "description": "AI makes claims about recipe ratings, popularity, or cost without evidence or disclaimers.",
+      "examples": [
+        {
+          "input_id": "26",
+          "input": "Best protein packed meal to make under 8$",
+          "output_issue": "No way the recipe bot can know this meal is under $8; AI should disclaim it is a best guess."
+        },
+        {
+          "input_id": "28",
+          "input": "give me the hightest rated grilled steak recipe with no marinade",
+          "output_issue": "If AI doesn't know if this is the highest rated recipe it should say so before giving a recommendation."
+        },
+        {
+          "input_id": "29",
+          "input": "give me the most popular oatmeal cookie recipe",
+          "output_issue": "If AI doesn't know what the most popular recipe is it should state that before giving a recommendation."
+        }
+      ]
+    }
+  ]
+}
