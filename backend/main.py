@@ -36,7 +36,7 @@ class ChatMessage(BaseModel):
     """Schema for a single message in the chat history."""
 
     role: str = Field(..., description="Role of the message sender (system, user, or assistant).")
-    content: str = Field(..., description="Content of the message.")
+    content: str | dict = Field(..., description="Content of the message.")
 
 
 class ChatRequest(BaseModel):
@@ -74,6 +74,7 @@ async def chat_endpoint(payload: ChatRequest) -> ChatResponse:  # noqa: WPS430
             detail=str(exc),
         ) from exc
 
+    print(updated_messages_dicts)
     response = ChatResponse(messages=[ChatMessage(**msg) for msg in updated_messages_dicts])
 
     # Save trace (request and response) in one place

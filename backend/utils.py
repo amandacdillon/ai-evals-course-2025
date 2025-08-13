@@ -10,17 +10,33 @@ This module centralises the system prompt, environment loading, and the
 wrapper around litellm so the rest of the application stays decluttered.
 """
 
+import inspect
+import json
 import os
+import re
 
-from typing import Dict, Final, List
+from pathlib import Path
+from typing import Any, Callable, Dict, Final, List, get_type_hints
 
 import braintrust as bt
 import litellm  # type: ignore
 
 from dotenv import load_dotenv
 
+from backend.query_rewrite_agent import QueryRewriteAgent
+from backend.retrieval import create_retriever
+
 # Ensure the .env file is loaded as early as possible.
 load_dotenv(override=False)
+
+qwra = QueryRewriteAgent()
+
+# Get the directory of the current file and construct paths relative to project root
+current_dir = Path(__file__).parent
+project_root = current_dir.parent
+retriever = create_retriever(
+    project_root / "backend" / "data" / "processed_recipes.json", project_root / "backend" / "data" / "bm25_index.pkl"
+)
 
 # Wayde: We initialize our Braintrust logger at module scope and wrap our Litellm client
 # so that spans related to calling litellm are properly nested and usage metrics are logged.
@@ -51,7 +67,135 @@ except Exception as e:
 MODEL_NAME: Final[str] = os.environ.get("MODEL_NAME", "gpt-4o-mini")
 
 
+# --- Utility functions -------------------------------------------------------
+
+
+def format_llm_tools(*functions: Callable) -> List[Dict[str, Any]]:
+    """Create properly formatted tools list from function definitions.
+
+    Args:
+        *functions: One or more function objects to convert to OpenAI tool format
+
+    Returns:
+        List of tool definitions in OpenAI format
+    """
+    tools = []
+
+    for func in functions:
+        # Get function signature and type hints
+        sig = inspect.signature(func)
+        type_hints = get_type_hints(func)
+
+        # Extract description from docstring
+        docstring = inspect.getdoc(func) or ""
+        description = docstring.split("\n")[0] if docstring else f"Function {func.__name__}"
+
+        # Build parameters schema
+        properties = {}
+        required = []
+
+        for param_name, param in sig.parameters.items():
+            # Skip self parameter
+            if param_name == "self":
+                continue
+
+            # Get type annotation
+            param_type = type_hints.get(param_name, str)
+
+            # Convert Python types to JSON schema types
+            if param_type == str:
+                json_type = "string"
+            elif param_type == int:
+                json_type = "integer"
+            elif param_type == float:
+                json_type = "number"
+            elif param_type == bool:
+                json_type = "boolean"
+            elif param_type == list or getattr(param_type, "__origin__", None) == list:
+                json_type = "array"
+            elif param_type == dict or getattr(param_type, "__origin__", None) == dict:
+                json_type = "object"
+            else:
+                json_type = "string"  # default fallback
+
+            # Extract parameter description from docstring Args section
+            param_desc = f"Parameter {param_name}"
+            if docstring:
+                # Look for Args section and extract parameter description
+                args_match = re.search(r"Args:\s*\n(.*?)(?:\n\n|\nReturns:|\nRaises:|\Z)", docstring, re.DOTALL)
+                if args_match:
+                    args_section = args_match.group(1)
+                    param_pattern = rf"\s*{re.escape(param_name)}[:\s]+(.*?)(?:\n\s*\w+[:\s]+|\Z)"
+                    param_match = re.search(param_pattern, args_section, re.DOTALL)
+                    if param_match:
+                        param_desc = param_match.group(1).strip()
+
+            properties[param_name] = {"type": json_type, "description": param_desc}
+
+            # Check if parameter is required (no default value)
+            if param.default == inspect.Parameter.empty:
+                required.append(param_name)
+
+        # Build tool definition
+        tool_def = {
+            "type": "function",
+            "function": {
+                "name": func.__name__,
+                "description": description,
+                "parameters": {
+                    "type": "object",
+                    "properties": properties,
+                    "required": required,
+                    "additionalProperties": False,
+                },
+                "strict": True,
+            },
+        }
+
+        tools.append(tool_def)
+
+    return tools
+
+
 # --- Agent wrapper ---------------------------------------------------------------
+
+
+def _format_recipes_for_llm(recipes: List[Dict[str, Any]]) -> str:
+    """Format a recipe for the LLM."""
+    formatted_recipes = []
+    for recipe in recipes:
+        formatted_recipes.append(f"""
+            -----              
+            Name: {recipe["name"]}
+            Description: {recipe["description"]}
+            Minutes: {recipe["minutes"]}
+            Ingredients: {recipe["ingredients"]}
+            Steps: {recipe["steps"]}
+            Nutrition: {recipe["nutrition"]}
+            Tags: {recipe["tags"]}
+            -----
+            """)
+
+    return f"Recipes matching the user's query:\n\n{'\n\n'.join(formatted_recipes)}"
+
+
+@bt.traced
+def find_matching_recipes(query: str) -> str:
+    """Use this tool to fetch recipes related to the user's query to use as inspiration for the recipe you are recommending
+
+    Args:
+        query: The user's query
+
+    Returns:
+        A list of recipes that match the user's query
+    """
+    recipes = retriever.retrieve_bm25(query, 3)
+    return _format_recipes_for_llm(recipes)
+
+
+# Generate tools list automatically from function definitions
+tools = format_llm_tools(find_matching_recipes)
+tool_registry = {"find_matching_recipes": find_matching_recipes}
 
 
 # Wayde: We use the `@bt.traced` decorator to automatically log the input and output of the function.
@@ -61,6 +205,7 @@ MODEL_NAME: Final[str] = os.environ.get("MODEL_NAME", "gpt-4o-mini")
 def get_agent_response(
     messages: List[Dict[str, str]],
     metadata: dict | None = None,
+    query_rewrite: bool = True,
 ) -> List[Dict[str, str]]:  # noqa: WPS231
     """Call the underlying large-language model via *litellm*.
 
@@ -84,22 +229,42 @@ def get_agent_response(
     else:
         current_messages = messages
 
-    completion = litellm_wrapper.completion(
-        model=MODEL_NAME,
-        messages=current_messages,  # Pass the full history
-    )
+    messages_len = len(current_messages)
 
-    assistant_reply_content: str = completion["choices"][0]["message"]["content"].strip()  # type: ignore[index]
+    # If you want to use the query rewrite agent to "improve" the query, you can do so here.
+    if query_rewrite:
+        res_d = qwra.process_query(messages[-1]["content"])
+        messages[-1]["content"] = res_d["processed_query"]
 
-    # Append assistant's response to the history
-    updated_messages = current_messages + [{"role": "assistant", "content": assistant_reply_content}]
+    # We always want to fetch the most relevant recipes based on the latest messages
+    rsp = litellm_wrapper.completion(model=MODEL_NAME, messages=current_messages, tools=tools, tool_choice="auto")
+
+    while True:
+        tc = rsp.choices[0].message.tool_calls
+        if not tc:  # no tool calls => final answer
+            assistant_reply_content: str = rsp["choices"][0]["message"]["content"].strip()
+            current_messages.append({"role": "assistant", "content": assistant_reply_content})
+            break
+
+        current_messages.append(rsp.choices[0].message.model_dump(exclude_none=True))
+        for call in tc:
+            fn = tool_registry[call.function.name]
+            args = json.loads(call.function.arguments or "{}")
+            result = fn(**args)
+            current_messages.append(
+                {"role": "tool", "tool_call_id": call.id, "content": json.dumps(result) if not isinstance(result, str) else result}
+            )
+
+        rsp = litellm_wrapper.completion(model=MODEL_NAME, messages=current_messages, tools=tools, tool_choice="auto")
 
     # Wayde: We log the input and output of the function as a span.
     # We also pass in the metadata for the row so that we can trace the row back to the original input.
     # Note: If you are good with the default logging, you can just use the `@bt.traced` decorator instead.
     bt.current_span().log(
-        input=current_messages,
-        output=[updated_messages[-1]],
+        input=current_messages[:messages_len],
+        output=current_messages[messages_len:],
         metadata=metadata,
     )
-    return updated_messages
+
+    # return just the initial messages and the final response as the output
+    return current_messages[:messages_len] + [current_messages[-1]]
