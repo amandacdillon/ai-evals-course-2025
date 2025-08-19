@@ -190,6 +190,7 @@ def find_matching_recipes(query: str) -> str:
         A list of recipes that match the user's query
     """
     recipes = retriever.retrieve_bm25(query, 3)
+    bt.current_span().log(metadata={"agent_step": "find_matching_recipes"})
     return _format_recipes_for_llm(recipes)
 
 
@@ -237,7 +238,9 @@ def get_agent_response(
         messages[-1]["content"] = res_d["processed_query"]
 
     # We always want to fetch the most relevant recipes based on the latest messages
-    rsp = litellm_wrapper.completion(model=MODEL_NAME, messages=current_messages, tools=tools, tool_choice="auto")
+    rsp = litellm_wrapper.completion(
+        model=MODEL_NAME, messages=current_messages, tools=tools, tool_choice="auto", metadata={"agent_step": "get_agent_response"}
+    )
 
     while True:
         tc = rsp.choices[0].message.tool_calls
@@ -255,7 +258,9 @@ def get_agent_response(
                 {"role": "tool", "tool_call_id": call.id, "content": json.dumps(result) if not isinstance(result, str) else result}
             )
 
-        rsp = litellm_wrapper.completion(model=MODEL_NAME, messages=current_messages, tools=tools, tool_choice="auto")
+        rsp = litellm_wrapper.completion(
+            model=MODEL_NAME, messages=current_messages, tools=tools, tool_choice="auto", metadata={"agent_step": "get_agent_response"}
+        )
 
     # Wayde: We log the input and output of the function as a span.
     # We also pass in the metadata for the row so that we can trace the row back to the original input.

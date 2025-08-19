@@ -127,6 +127,7 @@ Expanded query with synonyms:
             print(f"Error expanding query: {e}")
             return query  # Fallback to original query
 
+    @bt.traced(name="query_rewrite")
     def process_query(self, query: str, strategy: str = "rewrite") -> Dict[str, str]:
         """
         Process a query using the specified strategy.
@@ -147,6 +148,7 @@ Expanded query with synonyms:
         else:
             raise ValueError(f"Unknown strategy: {strategy}")
 
+        bt.current_span().log(metadata={"agent_step": "query_rewrite"})
         return {"original_query": query, "processed_query": processed, "strategy": strategy}
 
     def _process_query_with_retry(self, query: str, strategy: str, max_retries: int = 3) -> Dict[str, str]:
